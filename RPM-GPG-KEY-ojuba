@@ -1,0 +1,34 @@
+The following public key can be used to verify RPM packages built and
+signed by Ojuba.org team. using `rpm -K' using the GNU GPG package. 
+Questions about this key should be sent to core@ojuba.org.
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+mQGiBEhmkpwRBACXc440llFjhUQUXSRllVGUfOGLkh00gmHa5zbI5tvzqCzxsdid
+3aYi0BAs/0FaHHKbNiL98q/YlEiaCXqio+eR2B8s2TT8m2BkaJGKrveEGv27reMy
+ONVgURgcRxbD35VJMci2NmPnas+LOl+0foGSpTeVBZX6JcV2cwa/nbdILwCg2335
+xyxAGbmEF15irN2M+4Vns68D/3SOcVFJOAqO4uECLTFq1njwe+7esZY0r/1AAZ9f
+YkQIswVRflSi8LvBMDZtrZ7zd+ytoJ0J/d2l2hql1KA3S7ErBuYuC1PurVTRLe/d
+heC/3QOzVuLSfzHB4NzJmnw5jCWrmZasP3qdcNfjRWSXT2hNkJArzDuzbkYOydYU
+MWp8A/9sCSgo98LBhMobqkC40NJZ2Ou5syUJdN5Jsm736xRrJ3prHj0mgmrOlPLF
+VAdZixQLiXdkez49OwC/LALkGLTNk6bRouyOYTKz/KcXPdg5hwtGaroPP0ZTeKnG
+rOQY9HSNfCfUVU6x1kDwUD5HmpjVChRlTUjyvj2Q0oz92ezPnrQ2T2p1YmEgVGVh
+bSAoQSBGTE9TUyBTb2Z0d2FyZSBQcm9qZWN0KSA8Y29yZUBvanViYS5vcmc+iGAE
+ExECACAFAkhmkpwCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRDVXwcfz8TZ
+vjnCAJ9jyuyo9RkP/GVeV54VwtdCRGIdHACgi4bh+Uw3EWyrhrKTybxjNIPub3a5
+Ag0ESGaSnBAIALyzjYOHZ6UywjmApa84aj0WgnA0mTu3KsuJYxF78rTU3fejCVUo
+0jh6dSPpIbX3kVcnt2p4AazZXwZOClN+avKScjppAeIS7N9RY2osPF0cIMCs7Pi5
+yepdA7WTDWLChsvqVm3XAhdnwwKrXn0nhy6hRNewnsCLNFtv4gcVWK8UnRkPKCSC
+fqIvH+F5SS/cZMy1L9t+Pa9DMTR51mo2ZEBaL14dy0NhtqdSy8z7rkvZazNW9yAX
+Li4GzTCIdvKAUJfaM/x1816hG1w9c1aHq5vYD+t7RTWpXIrL2Vyamgmy6UMfetiC
+Ige7YI+RREri2qpzzNYzNKRWklARTwpyre8AAwUH/jdeWLjZ1IYO4RNu/cydSwOd
+4cUQv07Ys1miQGEdmKHQX2joRRW2L2FUCQ2/cyYtDsIJ5PHxnJglvWtJh9UGMunj
+zy8KkgIeWIxYSdSJ2Qooc/iGEAF8yqWNZ+LR/sB1U7MpBBxO7US45rbGyPrNx3fU
+A7jyNgaJkI23pPqebGsYBakhHyZTmUkv8XAUjiaj3f7zB0wE7sZx1Lr6663WNa3w
+qw7tbvdt6nnGKraDHabuB4Jo1oAFJ/JKvp5l7hrYfHZ0IWaxjUJdapaTk3AXlLOb
+KmWT810rvp12XLd9z9bqAWq/Ti5w3GJwqnR94UwWTLhZRxre9DY1qi1gpSvy65qI
+SQQYEQIACQUCSGaSnAIbDAAKCRDVXwcfz8TZvpmMAKCkLbxbWxanHjbj7f6loLqN
+Vi9hMgCgvh4IAHu08l+YynYD1ZW0kpKRq1Q=
+=/00j
+-----END PGP PUBLIC KEY BLOCK-----

@@ -1,0 +1,9 @@
+[ojuba]
+name=ojuba $releasever - $basearch
+failovermethod=priority
+#baseurl=http://www.ojuba.org/downloads/releases/$releasever/Everything/$basearch/os/
+mirrorlist=http://mirrors.ojuba.org/repo=os+arch=$basearch+release=$releasever
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ojuba
+
