@@ -3,25 +3,25 @@
 %define dist_version 20
 %define bug_version 20
 
-Summary(ar):	ملفات نظام أعجوبة
+Summary(ar):    ملفات نظام أعجوبة
 Summary:        Ojuba release files
 Name:           ojuba-release
 Version:        35
-Release:        3
-License:        GPLv2
+Release:        4
+License:        WAQFv2 and GPLv2
 Group:          System Environment/Base
 URL:            http://ojuba.org
-Source0:	fedora-release-%{dist_version}.tar.bz2
-Source1:	ojuba.repo
-Source2:	waqf2-ar.pdf
-Source3:	RPM-GPG-KEY-ojuba	
+Source0:	    fedora-release-%{dist_version}.tar.bz2
+Source1:	    ojuba.repo
+Source2:	    waqf2-ar.pdf
+Source3:    	RPM-GPG-KEY-ojuba	
 Obsoletes:      redhat-release
 Provides:       redhat-release = %{dist_version}
-Obsoletes:	fedora-release
-Provides:	fedora-release = %{dist_version}
+Obsoletes:      fedora-release
+Provides:       fedora-release = %{dist_version}
 Provides:       system-release = %{dist_version}
 Obsoletes:      fedora-release-rawhide
-BuildArch:       noarch
+BuildArch:      noarch
 
 %description -l ar
 الملفات الأساسية الخاصة بتعريف نظام أعجوبة.
@@ -159,6 +159,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/pki/rpm-gpg/*ojuba*
 
 %changelog
+* Fri Feb 21 2014 Mosaab Alzoubi <moceap@hotmail.com> - 35-4
+- General Fixes.
+
 * Wed Feb 12 2014 Mosaab Alzoubi <moceap@hotmail.com> - 35-1
 - Ojuba release 35 built upon Fedora release 20-1
 - Tricks From past Ojuba release spec and from Korora one,
@@ -461,4 +464,3 @@ rm -rf $RPM_BUILD_ROOT
 - Look, a changelog!
 - Removed duplicate html/css content from doc dir.
 - Add lynx as a buildreq
-
