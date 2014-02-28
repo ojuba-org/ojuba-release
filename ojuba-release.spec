@@ -7,7 +7,7 @@ Summary(ar):    ملفات نظام أعجوبة
 Summary:        Ojuba release files
 Name:           ojuba-release
 Version:        35
-Release:        4
+Release:        5
 License:        WAQFv2 and GPLv2
 Group:          System Environment/Base
 URL:            http://ojuba.org
@@ -52,13 +52,14 @@ sed -i -e 's/enabled=1/enabled=1\nexclude=fedora-release fedora-logos/' *.repo
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc
-echo "النّظام الأعجوبة %{version} (%{ar_release_name})" > $RPM_BUILD_ROOT/etc/ojuba-release
+echo "النّظام الأعجوبة (%{ar_release_name})" > $RPM_BUILD_ROOT/etc/ojuba-release
 ln -s ojuba-release $RPM_BUILD_ROOT/etc/fedora-release
 ln -s ojuba-release $RPM_BUILD_ROOT/etc/redhat-release
 ln -s ojuba-release $RPM_BUILD_ROOT/etc/system-release
 echo "cpe:/o:ojubaproject:ojuba:%{version}" > $RPM_BUILD_ROOT/etc/system-release-cpe
-cp -p $RPM_BUILD_ROOT/etc/ojuba-release $RPM_BUILD_ROOT/etc/issue
-echo "النّواة \r على \m" >> $RPM_BUILD_ROOT/etc/issue
+
+echo "Ojuba OS %{version} (%{release_name})" > $RPM_BUILD_ROOT/etc/issue
+echo "\r" >> $RPM_BUILD_ROOT/etc/issue
 cp -p $RPM_BUILD_ROOT/etc/issue $RPM_BUILD_ROOT/etc/issue.net
 echo >> $RPM_BUILD_ROOT/etc/issue
 
@@ -66,7 +67,7 @@ cat << EOF >>$RPM_BUILD_ROOT/etc/os-release
 NAME=أعجوبة
 VERSION="%{version} (%{ar_release_name})"
 ID=ojuba
-VERSION_ID=%{dist_version}
+VERSION_ID=%{version}
 PRETTY_NAME="Ojuba %{version} (%{release_name})"
 ANSI_COLOR="0;34"
 CPE_NAME="cpe:/o:ojubaproject:ojuba:%{version}"
@@ -159,6 +160,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/pki/rpm-gpg/*ojuba*
 
 %changelog
+* Fri Feb 28 2014 Mosaab Alzoubi <moceap@hotmail.com> - 35-5
+- General Fixes.
+
 * Fri Feb 21 2014 Mosaab Alzoubi <moceap@hotmail.com> - 35-4
 - General Fixes.
 
