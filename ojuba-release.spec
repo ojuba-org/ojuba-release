@@ -69,7 +69,7 @@ VERSION="%{version} (%{ar_release_name})"
 ID=ojuba
 VERSION_ID=%{version}
 PRETTY_NAME="Ojuba %{version} (%{release_name})"
-ANSI_COLOR="0;34"
+ANSI_COLOR="0;32"
 CPE_NAME="cpe:/o:ojubaproject:ojuba:%{version}"
 HOME_URL="http://ojuba.org/"
 EOF
