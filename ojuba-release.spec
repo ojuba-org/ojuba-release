@@ -98,7 +98,7 @@ install -m 644 RPM-GPG-KEY* $RPM_BUILD_ROOT/etc/pki/rpm-gpg/
 pushd $RPM_BUILD_ROOT/etc/pki/rpm-gpg/
 for keyfile in RPM-GPG-KEY*; do
     key=${keyfile#RPM-GPG-KEY-} # e.g. 'fedora-20-primary'
-    arches=$(sed -ne "s/^${key}://p" $RPM_BUILD_DIR/fedora-release-%{dist_version}/archmap) \    
+    arches=$(sed -ne "s/^${key}://p" $RPM_BUILD_DIR/fedora-release-%{dist_version}/archmap) \
         || echo "WARNING: no archmap entry for $key"
     for arch in $arches; do
         # replace last part with $arch (fedora-20-primary -> fedora-20-$arch)
@@ -391,7 +391,7 @@ rm -rf $RPM_BUILD_ROOT
 - Bump for F8 Test2
 - Fix license tag
 
-* Thu Jul 27 2007 Jesse Keating <jkeating@redhat.com> - 7.90-1
+* Fri Jul 27 2007 Jesse Keating <jkeating@redhat.com> - 7.90-1
 - Bump for F8 Test1
 
 * Thu Jun 28 2007 Jesse Keating <jkeating@redhat.com> - 7.89-3
@@ -484,4 +484,3 @@ rm -rf $RPM_BUILD_ROOT
 - Look, a changelog!
 - Removed duplicate html/css content from doc dir.
 - Add lynx as a buildreq
-
