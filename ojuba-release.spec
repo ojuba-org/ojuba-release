@@ -484,3 +484,4 @@ rm -rf $RPM_BUILD_ROOT
 - Look, a changelog!
 - Removed duplicate html/css content from doc dir.
 - Add lynx as a buildreq
+
