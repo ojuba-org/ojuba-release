@@ -1,10 +1,11 @@
-%define release_name Aljazair
-%define ar_release_name الجزائر
-%define dist_version 20
-%define bug_version 20
-%define oj_version 35
-%define dist_release 4
-%define oj_release 16
+%define release_name Thirty Six
+%define ar_release_name السادسة والثلاثون
+%define dist_version 21
+%define bug_version 21
+%define oj_version 36
+%define bug_version 36
+%define dist_release 1
+%define oj_release 1
 
 Summary(ar):    ملفات نظام أعجوبة
 Summary:        Ojuba release files
@@ -14,50 +15,55 @@ Release:        %{oj_release}
 License:        WAQFv2 and GPLv2
 Group:          System Environment/Base
 URL:            http://ojuba.org
-Source0:	    fedora-release-%{dist_version}.tar.bz2
-Source1:	    ojuba.repo
-Source2:	    waqf2-ar.pdf
-Source3:    	RPM-GPG-KEY-ojuba
-Requires:	ojuba-release-extra = %{dist_version}
+Source0:        ojuba-release-%{oj_version}.tar.bz2
+#Source0:	    fedora-release-%{dist_version}.tar.bz2
+#Source1:	    fedora-repos-%{dist_version}.tar.bz2
+#Source2:	    ojuba.repo
+#Source3:	    waqf2-ar.pdf
+#Source4:    	RPM-GPG-KEY-ojuba
+#Requires:	    ojuba-release-extra = %{dist_version}
+Requires:       ojuba-repos = %{oj_version}-%{oj_release}
+Obsoletes:      redhat-release
+Provides:       redhat-release
+Provides:       system-release
+Provides:       system-release = %{dist_version}
+Obsoletes:      fedora-release
+Provides:       fedora-release = %{dist_version}
 Obsoletes:      fedora-release-rawhide
+Conflicts:      fedora-release-cloud
+Conflicts:      fedora-release-server
+
 BuildArch:      noarch
 
 %description -l ar
 الملفات الأساسية الخاصة بتعريف نظام أعجوبة.
 
 %description
-Basic files of Ojuba OS.
+Ojuba release files such as various /etc/ files that define the release.
 
 %package rawhide
 Summary:        Rawhide repo definitions
-Requires:       ojuba-release = %{oj_version}-%{oj_release}
-Obsoletes:	fedora-release-rawhide
-Provides:	fedora-release-rawhide
+Requires:       ojuba-release(%{oj_version}-%{oj_release})
+Obsoletes:	    fedora-release-rawhide
+Provides:	    fedora-release-rawhide
+BuildArch:      noarch
 
 %description rawhide
 This package provides the rawhide repo definitions.
 
-%package extra
-Summary:	Extra Ojuba Release
-Requires:       ojuba-release = %{oj_version}-%{oj_release}
-Release:        %{dist_release}
-Version:	%{dist_version}
-Obsoletes:      redhat-release
-Provides:       redhat-release = %{dist_version}
-Obsoletes:      fedora-release
-Provides:       fedora-release = %{dist_version}
-Provides:       system-release = %{dist_version}
-
-%description extra
-Extra files of Ojuba release.
-
 
 %prep
-%setup -q -n fedora-release-%{dist_version}
+rm -rf %{_topdir}/BUILD/*
+
+%setup -q
+tar xjf fedora-repos-%{dist_version}.tar.bz2 -C ./ --strip-components=1
+tar xjf fedora-release-%{dist_version}.tar.bz2 -C ./ --strip-components=1
+
 sed -i 's|@@VERSION@@|%{dist_version}|g' Fedora-Legal-README.txt
-cp %{SOURCE1} %{SOURCE2} %{SOURCE3} ./
-cp ojuba.repo repo-ojuba.repo
-sed -i -e 's/enabled=1/enabled=1\nexclude=ojuba-release ojuba-release-notes ojuba-logos/' repo-ojuba.repo
+#cp %{SOURCE2} %{SOURCE3} %{SOURCE4} ./
+
+#cp ojuba.repo repo-ojuba.repo
+sed -i -e 's/enabled=1/enabled=1\nexclude=ojuba-release ojuba-release-notes ojuba-logos/' ojuba.repo
 sed -i -e 's/enabled=1/enabled=1\nexclude=fedora-release fedora-logos/' *.repo
 
 %build
@@ -66,13 +72,13 @@ sed -i -e 's/enabled=1/enabled=1\nexclude=fedora-release fedora-logos/' *.repo
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc
-echo "OjubaOS release %{oj_version} (%{release_name})" > $RPM_BUILD_ROOT/etc/ojuba-release
+echo "Ojuba OS release %{oj_version} (%{release_name})" > $RPM_BUILD_ROOT/etc/ojuba-release
 ln -s ojuba-release $RPM_BUILD_ROOT/etc/fedora-release
 ln -s ojuba-release $RPM_BUILD_ROOT/etc/redhat-release
 ln -s ojuba-release $RPM_BUILD_ROOT/etc/system-release
 echo "cpe:/o:ojubaproject:ojuba:%{oj_version}" > $RPM_BUILD_ROOT/etc/system-release-cpe
-echo "Ojuba OS %{oj_version} (%{release_name})" > $RPM_BUILD_ROOT/etc/issue
-echo "\r" >> $RPM_BUILD_ROOT/etc/issue
+cp -p $RPM_BUILD_ROOT/etc/ojuba-release $RPM_BUILD_ROOT/etc/issue
+echo "Kernel \r on an \m (\l)" >> $RPM_BUILD_ROOT/etc/issue
 cp -p $RPM_BUILD_ROOT/etc/issue $RPM_BUILD_ROOT/etc/issue.net
 echo >> $RPM_BUILD_ROOT/etc/issue
 
@@ -85,6 +91,23 @@ PRETTY_NAME="Ojuba %{oj_version} (%{release_name})"
 ANSI_COLOR="0;32"
 CPE_NAME="cpe:/o:ojubaproject:ojuba:%{oj_version}"
 HOME_URL="http://ojuba.org/"
+BUG_REPORT_URL="https://bugzilla.redhat.com/"
+REDHAT_BUGZILLA_PRODUCT="Fedora"
+REDHAT_BUGZILLA_PRODUCT_VERSION=%{bug_version}
+REDHAT_SUPPORT_PRODUCT="Fedora"
+REDHAT_SUPPORT_PRODUCT_VERSION=%{bug_version}
+EOF
+
+# Set up the dist tag macros
+install -d -m 755 $RPM_BUILD_ROOT/etc/rpm
+cat >> $RPM_BUILD_ROOT/etc/rpm/macros.dist << EOF
+# dist macros.
+
+%%ojuba                %{oj_version}
+%%dist                .oj%{oj_version}
+%%oj%{dist_version}                1
+%%fedora                %{dist_version}
+%%fc%{dist_version}                   1
 EOF
 
 # Install the keys
@@ -114,29 +137,22 @@ for file in *.repo ; do
   install -m 644 $file $RPM_BUILD_ROOT/etc/yum.repos.d
 done
 
-# Set up the dist tag macros
-install -d -m 755 $RPM_BUILD_ROOT/etc/rpm
-cat >> $RPM_BUILD_ROOT/etc/rpm/macros.dist << EOF
-# dist macros.
 
-%%ojuba                %{oj_version}
-%%dist                .oj%{oj_version}
-%%oj%{dist_version}                1
-%%fedora                %{dist_version}
-%%fc%{dist_version}                   1
-EOF
 
-%package -n ojuba-repo-release
+%package -n ojuba-repos
 Summary(ar):	ملفات مستودعات أعجوبة
-Summary:	Ojuba repository release files
-Group:		System Environment/Base
-URL:		http://ojuba.org
+Summary:	    Ojuba repository release files
+Group:		    System Environment/Base
+URL:		    http://ojuba.org
+Obsoletes:      fedora-repos
+Provides:       fedora-repos = %{dist_version}
 
-%description -l ar -n ojuba-repo-release
+%description -l ar -n ojuba-repos
 إضافة مستودعات أعجوبة لأي نظام موافق.
 
-%description -n ojuba-repo-release
-Adds Ojuba yum repository to similar systems.
+%description -n ojuba-repos
+Ojuba and fedora package repository files for yum and dnf along with gpg public keys
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -148,15 +164,21 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %config(noreplace) /etc/yum.repos.d/fedora-rawhide.repo
 
-%files extra
+%files
 %defattr(-,root,root,-)
-%doc GPL Fedora-Legal-README.txt waqf2-ar.pdf
+#%doc GPL Fedora-Legal-README.txt waqf2-ar.pdf
+%doc Fedora-Legal-README.txt waqf2-ar.pdf
 %config %attr(0644,root,root) /etc/os-release
 %config %attr(0644,root,root) /etc/ojuba-release
 /etc/redhat-release
 /etc/fedora-release
 /etc/system-release
 %config %attr(0644,root,root) /etc/system-release-cpe
+
+
+%files -n ojuba-repos
+%defattr(-,root,root,-)
+%doc waqf2-ar.pdf
 %dir /etc/yum.repos.d
 %config(noreplace) /etc/yum.repos.d/ojuba.repo
 %config(noreplace) /etc/yum.repos.d/fedora.repo
@@ -167,15 +189,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir /etc/pki/rpm-gpg
 /etc/pki/rpm-gpg/*
 
-%files -n ojuba-repo-release
-%defattr(-,root,root,-)
-%doc waqf2-ar.pdf
-%dir /etc/yum.repos.d
-%config(noreplace) /etc/yum.repos.d/repo-ojuba.repo
-%dir /etc/pki/rpm-gpg
-/etc/pki/rpm-gpg/*ojuba*
-
 %changelog
+* Mon Apr 06 2015 Ehab El-Gedawy <ehabsas@gmail.com> - 36-1
+- General Fixes.
+
 * Fri Feb 28 2014 Mosaab Alzoubi <moceap@hotmail.com> - 35-5
 - General Fixes.
 
