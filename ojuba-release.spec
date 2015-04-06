@@ -4,8 +4,8 @@
 %define bug_version 21
 %define oj_version 36
 %define bug_version 36
-%define dist_release 1
-%define oj_release 1
+%define dist_release 2
+%define oj_release 2
 
 Summary(ar):    ملفات نظام أعجوبة
 Summary:        Ojuba release files
@@ -21,18 +21,7 @@ Source0:        ojuba-release-%{oj_version}.tar.bz2
 #Source2:	    ojuba.repo
 #Source3:	    waqf2-ar.pdf
 #Source4:    	RPM-GPG-KEY-ojuba
-#Requires:	    ojuba-release-extra = %{dist_version}
-Requires:       ojuba-repos = %{oj_version}-%{oj_release}
-Obsoletes:      redhat-release
-Provides:       redhat-release
-Provides:       system-release
-Provides:       system-release = %{dist_version}
-Obsoletes:      fedora-release
-Provides:       fedora-release = %{dist_version}
-Obsoletes:      fedora-release-rawhide
-Conflicts:      fedora-release-cloud
-Conflicts:      fedora-release-server
-
+Requires:	    ojuba-release-extra = %{dist_version}
 BuildArch:      noarch
 
 %description -l ar
@@ -51,6 +40,25 @@ BuildArch:      noarch
 %description rawhide
 This package provides the rawhide repo definitions.
 
+%package extra
+Summary:	Extra Ojuba Release
+Requires:       ojuba-release = %{oj_version}-%{oj_release}
+Release:        %{dist_release}
+Version:	    %{dist_version}
+Requires:       ojuba-repos = %{oj_version}-%{oj_release}
+Obsoletes:      redhat-release
+Provides:       redhat-release
+Provides:       system-release
+Provides:       system-release = %{dist_version}
+Obsoletes:      fedora-release
+Provides:       fedora-release = %{dist_version}
+Obsoletes:      fedora-release-rawhide
+Conflicts:      fedora-release-cloud
+Conflicts:      fedora-release-server
+
+
+%description extra
+Extra files of Ojuba release.
 
 %prep
 rm -rf %{_topdir}/BUILD/*
@@ -86,7 +94,7 @@ cat << EOF >>$RPM_BUILD_ROOT/etc/os-release
 NAME=أعجوبة
 VERSION="%{oj_version} (%{ar_release_name})"
 ID=ojuba
-VERSION_ID=%{oj_version}
+VERSION_ID=%{dist_version}
 PRETTY_NAME="Ojuba %{oj_version} (%{release_name})"
 ANSI_COLOR="0;32"
 CPE_NAME="cpe:/o:ojubaproject:ojuba:%{oj_version}"
@@ -105,7 +113,7 @@ cat >> $RPM_BUILD_ROOT/etc/rpm/macros.dist << EOF
 
 %%ojuba                %{oj_version}
 %%dist                .oj%{oj_version}
-%%oj%{dist_version}                1
+%%oj%{oj_version}                1
 %%fedora                %{dist_version}
 %%fc%{dist_version}                   1
 EOF
@@ -164,7 +172,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %config(noreplace) /etc/yum.repos.d/fedora-rawhide.repo
 
-%files
+%files extra
 %defattr(-,root,root,-)
 #%doc GPL Fedora-Legal-README.txt waqf2-ar.pdf
 %doc Fedora-Legal-README.txt waqf2-ar.pdf
@@ -191,7 +199,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon Apr 06 2015 Ehab El-Gedawy <ehabsas@gmail.com> - 36-1
-- General Fixes.
+- Retrieve extra package.
+
+* Mon Apr 06 2015 Ehab El-Gedawy <ehabsas@gmail.com> - 36-1
+- Ojuba 36 release.
 
 * Fri Feb 28 2014 Mosaab Alzoubi <moceap@hotmail.com> - 35-5
 - General Fixes.
