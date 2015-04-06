@@ -4,8 +4,8 @@
 %define bug_version 21
 %define oj_version 36
 %define bug_version 36
-%define dist_release 2
-%define oj_release 2
+%define dist_release 1
+%define oj_release 1
 
 Summary(ar):    ملفات نظام أعجوبة
 Summary:        Ojuba release files
@@ -94,7 +94,7 @@ cat << EOF >>$RPM_BUILD_ROOT/etc/os-release
 NAME=أعجوبة
 VERSION="%{oj_version} (%{ar_release_name})"
 ID=ojuba
-VERSION_ID=%{dist_version}
+VERSION_ID=%{oj_version}
 PRETTY_NAME="Ojuba %{oj_version} (%{release_name})"
 ANSI_COLOR="0;32"
 CPE_NAME="cpe:/o:ojubaproject:ojuba:%{oj_version}"
