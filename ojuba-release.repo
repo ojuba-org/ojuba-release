@@ -1,4 +1,4 @@
-[ojuba]
+[ojuba-release]
 name=Ojuba Thirty Six 36
 failovermethod=priority
 baseurl=http://ojuba.org/downloads/releases/$releasever/Everything/$basearch/os/
