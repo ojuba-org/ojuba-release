@@ -18,7 +18,7 @@ URL:            http://ojuba.org
 Source0:        ojuba-release-%{oj_version}.tar.bz2
 #Source0:	    fedora-release-%{dist_version}.tar.bz2
 #Source1:	    fedora-repos-%{dist_version}.tar.bz2
-#Source2:	    ojuba.repo
+#Source2:	    ojuba-release.repo
 #Source3:	    waqf2-ar.pdf
 #Source4:    	RPM-GPG-KEY-ojuba
 Requires:	    ojuba-release-extra = %{dist_version}
@@ -188,7 +188,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc waqf2-ar.pdf
 %dir /etc/yum.repos.d
-%config(noreplace) /etc/yum.repos.d/ojuba.repo
+%config(noreplace) /etc/yum.repos.d/ojuba-release.repo
 %config(noreplace) /etc/yum.repos.d/fedora.repo
 %config(noreplace) /etc/yum.repos.d/fedora-updates*.repo
 %config(noreplace) %attr(0644,root,root) /etc/issue
@@ -198,6 +198,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/pki/rpm-gpg/*
 
 %changelog
+* Mon Jul 20 2015 Mosaab Alzoubi <moceap@hotmail.com> - 36-2
+- Rename ojuba.repo to ojub-release.repo
+
 * Mon Apr 06 2015 Ehab El-Gedawy <ehabsas@gmail.com> - 36-1
 - Retrieve extra package.
 
