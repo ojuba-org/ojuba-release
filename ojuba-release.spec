@@ -20,6 +20,7 @@ Source0:        ojuba-release-%{oj_version}.tar.bz2
 Requires:	    ojuba-release-extra = %{dist_version}
 BuildArch:      noarch
 
+
 %description -l ar
 الملفات الأساسية الخاصة بتعريف نظام أعجوبة.
 
@@ -38,19 +39,30 @@ This package provides the rawhide repo definitions.
 
 %package extra
 Summary:	Extra Ojuba Release
-Requires:       ojuba-release = %{oj_version}-%{oj_release}
-Release:        %{dist_release}
 Version:	    %{dist_version}
-Requires:       ojuba-repos = %{oj_version}-%{oj_release}
+Release:        %{oj_release}
+Requires:       ojuba-repos
+Requires:       ojuba-release
+
+
 Obsoletes:      redhat-release
 Provides:       redhat-release
 Provides:       system-release
-Provides:       system-release = %{dist_version}
+Provides:       system-release(%{dist_version})
 Obsoletes:      fedora-release
-Provides:       fedora-release = %{dist_version}
-Obsoletes:      fedora-release-rawhide
-Conflicts:      fedora-release-cloud
-Conflicts:      fedora-release-server
+Provides:       fedora-release = %{dist_version}-%{dist_release}
+Provides:       fedora-release(%{dist_version})
+
+# Kill off the fedora-release-nonproduct package
+Provides:       fedora-release-nonproduct = %{version}
+Obsoletes:      fedora-release-nonproduct <= 23-0.3
+Provides:       fedora-release-standard = 22-0.8
+Obsoletes:      fedora-release-standard < 22-0.8
+Obsoletes:      fedora-release-workstation
+Provides:       fedora-release-workstation
+Provides:       fedora-release-workstation(%{dist_version})
+Provides:       fedora-release-workstation = %{dist_version}-%{dist_release}
+Provides:       system-release-product
 
 
 %description extra
@@ -67,7 +79,7 @@ sed -i 's|@@VERSION@@|%{dist_version}|g' Fedora-Legal-README.txt
 #cp %{SOURCE2} %{SOURCE3} %{SOURCE4} ./
 
 #cp ojuba.repo repo-ojuba.repo
-sed -i -e 's/enabled=1/enabled=1\nexclude=ojuba-release ojuba-release-notes ojuba-logos/' ojuba.repo
+sed -i -e 's/enabled=1/enabled=1\nexclude=ojuba-release ojuba-release-notes ojuba-logos/' ojuba-release.repo
 sed -i -e 's/enabled=1/enabled=1\nexclude=fedora-release fedora-logos/' *.repo
 
 %build
@@ -88,7 +100,7 @@ ln -s ojuba-release $RPM_BUILD_ROOT/etc/system-release
 install -d $RPM_BUILD_ROOT/usr/lib/os.release.d/
 cat << EOF >>$RPM_BUILD_ROOT/usr/lib/os.release.d/os-release-ojuba
 NAME=Ojuba
-VERSION="%{oj_version} (%{ar_release_name})"
+VERSION="%{oj_version} (%{release_name})"
 ID=ojuba
 VERSION_ID=%{oj_version}
 PRETTY_NAME="Ojuba %{oj_version} (%{release_name})"
@@ -101,16 +113,21 @@ REDHAT_BUGZILLA_PRODUCT_VERSION=%{bug_version}
 REDHAT_SUPPORT_PRODUCT="Fedora"
 REDHAT_SUPPORT_PRODUCT_VERSION=%{bug_version}
 PRIVACY_POLICY_URL=https://fedoraproject.org/wiki/Legal:PrivacyPolicy
-VARIANT=(%{release_name})
-VARIANT_ID=workstation
 EOF
-ln -s ../usr/lib/os.release.d/os-release-ojuba $RPM_BUILD_ROOT/usr/lib/os.release.d/os-release-fedora
+ln -s ./os-release-ojuba $RPM_BUILD_ROOT/usr/lib/os.release.d/os-release-fedora
+
+# extra
+cp -p $RPM_BUILD_ROOT/usr/lib/os.release.d/os-release-ojuba \
+      $RPM_BUILD_ROOT/usr/lib/os.release.d/os-release-extra
+echo "VARIANT=\"Ojuba Edition\"" >> $RPM_BUILD_ROOT/usr/lib/os.release.d/os-release-extra
+echo "VARIANT_ID=ojubaextra" >> $RPM_BUILD_ROOT/usr/lib/os.release.d/os-release-extra
+#sed -i -e "s|(%{release_name})|(Ojuba Extra Edition)|g" $RPM_BUILD_ROOT/usr/lib/os.release.d/os-release-extra
 
 # Create the common /etc/issue
 echo "\S" > $RPM_BUILD_ROOT/usr/lib/os.release.d/issue-ojuba
 echo "Kernel \r on an \m (\l)" >> $RPM_BUILD_ROOT/usr/lib/os.release.d/issue-ojuba
 echo >> $RPM_BUILD_ROOT/usr/lib/os.release.d/issue-ojuba
-ln -s ../usr/lib/os.release.d/issue-ojuba $RPM_BUILD_ROOT/usr/lib/os.release.d/issue-fedora
+ln -s ./issue-ojuba $RPM_BUILD_ROOT/usr/lib/os.release.d/issue-fedora
 
 # Create /etc/issue.net
 echo "\S" > $RPM_BUILD_ROOT/usr/lib/issue.net
@@ -133,8 +150,8 @@ ln -s os.release.d/issue-ojuba $RPM_BUILD_ROOT/usr/lib/issue
 
 
 # Set up the dist tag macros
-install -d -m 755 $RPM_BUILD_ROOT/etc/rpm
-cat >> $RPM_BUILD_ROOT/etc/rpm/macros.dist << EOF
+install -d -m 755 $RPM_BUILD_ROOT%{_rpmconfigdir}/macros.d
+cat >> $RPM_BUILD_ROOT%{_rpmconfigdir}/macros.d/macros.dist << EOF
 # dist macros.
 
 %%ojuba                %{oj_version}
@@ -197,6 +214,7 @@ Group:		    System Environment/Base
 URL:		    http://ojuba.org
 Obsoletes:      fedora-repos
 Provides:       fedora-repos = %{dist_version}
+Provides:       fedora-repos(%{dist_version})
 
 %description -l ar -n ojuba-repos
 إضافة مستودعات أعجوبة لأي نظام موافق.
@@ -208,7 +226,7 @@ Ojuba and fedora package repository files for yum and dnf along with gpg public 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%posttrans extra
+%posttrans
 # Only on installation
 if [ $1 = 0 ]; then
     # If no fedora-release-$edition subpackage was installed,
@@ -219,16 +237,16 @@ fi
 
 %post extra
 # Run every time
-    # If there is no link to os-release yet from some other
-    # release package, create it
-    test -e /usr/lib/os-release || \
-        ln -sf ./os.release.d/os-release-workstation /usr/lib/os-release
+# If there is no link to os-release yet from some other
+# release package, create it
+test -e /usr/lib/os-release || \
+    ln -sf ./os.release.d/os-release-extra /usr/lib/os-release
 
-    # If os-release isn't a link or it exists but it points to a
-    # non-productized version, replace it with this one
-    if [ \! -h /usr/lib/os-release -o "x$(readlink /usr/lib/os-release)" = "xos.release.d/os-release-fedora" ]; then
-        ln -sf ./os.release.d/os-release-workstation /usr/lib/os-release || :
-    fi
+# If os-release isn't a link or it exists but it points to a
+# non-productized version, replace it with this one
+if [ \! -h /usr/lib/os-release -o "x$(readlink /usr/lib/os-release)" = "xos.release.d/os-release-ojuba" ]; then
+    ln -sf ./os.release.d/os-release-extra /usr/lib/os-release || :
+fi
 
 if [ $1 -eq 1 ] ; then
     # Initial installation
@@ -247,39 +265,22 @@ if [ $1 -eq 0 ] ; then
     # If os-release is now a broken symlink or missing replace it
     # with a symlink to basic version
     test -e /usr/lib/os-release || \
-        ln -sf ./os.release.d/os-release-fedora /usr/lib/os-release || :
+        ln -sf ./os.release.d/os-release-ojuba /usr/lib/os-release || :
 fi
 
 %posttrans extra
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
-%files
-# Just META
 
 %files rawhide
 %defattr(-,root,root,-)
 %config(noreplace) /etc/yum.repos.d/fedora-rawhide.repo
 
-%files extra
+%files
 %defattr(-,root,root,-)
 #%doc GPL Fedora-Legal-README.txt waqf2-ar.pdf
 %doc Fedora-Legal-README.txt waqf2-ar.pdf
-%dir /usr/lib/os.release.d
-%config %attr(0644,root,root) /usr/lib/os.release.d/os-release-ojuba
-%config %attr(0644,root,root) /usr/lib/os.release.d/os-release-fedora
-/usr/lib/os-release
-/etc/os-release
-%config %attr(0644,root,root) /etc/ojuba-release
-%config %attr(0644,root,root) /etc/fedora-release
-/etc/redhat-release
-/etc/system-release
-%config %attr(0644,root,root) /etc/system-release-cpe
-%config %attr(0644,root,root) /usr/lib/os.release.d/issue-ojuba
-%config %attr(0644,root,root) /usr/lib/os.release.d/issue-fedora
-/usr/lib/issue
-%config(noreplace) /etc/issue
-%config %attr(0644,root,root) /usr/lib/issue.net
-%config(noreplace) /etc/issue.net
+
 %attr(0644,root,root) %{_rpmconfigdir}/macros.d/macros.dist
 %dir /usr/lib/systemd/user-preset/
 %dir %{_prefix}/lib/systemd/system-preset/
@@ -287,9 +288,27 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_prefix}/lib/systemd/system-preset/90-default.preset
 %{_prefix}/lib/systemd/system-preset/99-default-disable.preset
 
+%files extra
+%config %attr(0644,root,root) /usr/lib/os.release.d/os-release-extra
 %{_datadir}/glib-2.0/schemas/org.gnome.shell.gschema.override
 %{_prefix}/lib/systemd/system-preset/80-workstation.preset
 
+%dir /usr/lib/os.release.d
+%config %attr(0644,root,root) /usr/lib/os.release.d/os-release-ojuba
+%config %attr(0644,root,root) /usr/lib/os.release.d/os-release-fedora
+/usr/lib/os-release
+%config %attr(0644,root,root) /usr/lib/os.release.d/issue-ojuba
+%config %attr(0644,root,root) /usr/lib/os.release.d/issue-fedora
+/usr/lib/issue
+%config %attr(0644,root,root) /usr/lib/issue.net
+/etc/os-release
+%config %attr(0644,root,root) /etc/ojuba-release
+%config %attr(0644,root,root) /etc/fedora-release
+/etc/redhat-release
+/etc/system-release
+%config %attr(0644,root,root) /etc/system-release-cpe
+%config(noreplace) /etc/issue
+%config(noreplace) /etc/issue.net
 
 %files -n ojuba-repos
 %defattr(-,root,root,-)
@@ -298,9 +317,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %config(noreplace) /etc/yum.repos.d/ojuba-release.repo
 %config(noreplace) /etc/yum.repos.d/fedora.repo
 %config(noreplace) /etc/yum.repos.d/fedora-updates*.repo
-#%config(noreplace) %attr(0644,root,root) /etc/issue
-#%config(noreplace) %attr(0644,root,root) /etc/issue.net
-%config %attr(0644,root,root) /etc/rpm/macros.dist
 %dir /etc/pki/rpm-gpg
 /etc/pki/rpm-gpg/*
 
