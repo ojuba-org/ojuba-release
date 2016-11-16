@@ -1,24 +1,24 @@
-%define release_name Thirty Seven
-%define ar_release_name السابعة والثلاثون
-%define dist_version 23
-%define bug_version 23
-%define oj_version 37
-%define bug_release 37
-%define dist_release 1
-%define oj_release 1
+%define release_name Thirty Eight
+%define ar_release_name الثامنة والثلاثون
+%define dist_version 25
+%define bug_version 25
+%define oj_version 38
+%define bug_release 38
+%define dist_release 0
+%define oj_release 0
 
-Summary(ar):    ملفات نظام أعجوبة
-Summary:        Ojuba release files
-Name:           ojuba-release
-Version:        %{oj_version}
-Release:        %{oj_release}
-License:        WAQFv2 and GPLv2
-Group:          System Environment/Base
-URL:            http://ojuba.org
-Source0:        ojuba-release-%{oj_version}.tar.bz2
+Summary(ar):        ملفات نظام أعجوبة
+Summary:            Ojuba release files
+Name:               ojuba-release
+Version:            %{oj_version}
+Release:            %{oj_release}
+License:            WAQFv2 and GPLv2
+Group:              System Environment/Base
+URL:                http://ojuba.org
+Source0:            ojuba-release-%{oj_version}.tar.bz2
 
-Requires:	    ojuba-release-extra = %{dist_version}
-BuildArch:      noarch
+Requires:           ojuba-release-extra = %{dist_version}-%{dist_release}
+BuildArch:          noarch
 
 
 %description -l ar
@@ -28,52 +28,80 @@ BuildArch:      noarch
 Ojuba release files such as various /etc/ files that define the release.
 
 %package rawhide
-Summary:        Rawhide repo definitions
-Requires:       ojuba-release(%{oj_version}-%{oj_release})
-Obsoletes:	    fedora-release-rawhide
-Provides:	    fedora-release-rawhide
-BuildArch:      noarch
+Summary:            Rawhide repo definitions
+Requires:           ojuba-repo = %{dist_version}-%{dist_release}
+Obsoletes:          fedora-release-rawhide <= %{dist_version}
+Provides:           fedora-release-rawhide
+Provides:           fedora-release-rawhide(%{dist_version})
+BuildArch:          noarch
+Conflicts:          fedora-release-rawhide
 
 %description rawhide
 This package provides the rawhide repo definitions.
 
 %package extra
-Summary:	Extra Ojuba Release
-Version:	    %{dist_version}
-Release:        %{oj_release}
-Requires:       ojuba-repos
-Requires:       ojuba-release
-
-
-Obsoletes:      redhat-release
-Provides:       redhat-release
-Provides:       system-release
-Provides:       system-release(%{dist_version})
-Obsoletes:      fedora-release
-Provides:       fedora-release = %{dist_version}-%{dist_release}
-Provides:       fedora-release(%{dist_version})
+Summary:            Extra Ojuba Release
+Version:            %{dist_version}
+Release:            %{oj_release}
+Requires:           ojuba-repos = %{oj_version}-%{oj_release}
+Requires:           ojuba-release = %{oj_version}-%{oj_release}
+# needed for captive portal support
+Requires:           NetworkManager-config-connectivity-fedora
+Requires(post):     /usr/bin/glib-compile-schemas
+Requires(postun):   /usr/bin/glib-compile-schemas
 
 # Kill off the fedora-release-nonproduct package
-Provides:       fedora-release-nonproduct = %{version}
-Obsoletes:      fedora-release-nonproduct <= 23-0.3
-Provides:       fedora-release-standard = 22-0.8
-Obsoletes:      fedora-release-standard < 22-0.8
-Obsoletes:      fedora-release-workstation
-Provides:       fedora-release-workstation
-Provides:       fedora-release-workstation(%{dist_version})
-Provides:       fedora-release-workstation = %{dist_version}-%{dist_release}
-Provides:       system-release-product
+Provides:           fedora-release-nonproduct = %{dist_version}
+Obsoletes:          fedora-release-nonproduct <= 23-0.3
+Provides:           fedora-release-standard = 22-0.8
+Obsoletes:          fedora-release-standard < 22-0.8
 
+Provides:           system-release-workstation
+Provides:           system-release-workstation(%{dist_version})
+Provides:           fedora-release-workstation = %{dist_version}-%{dist_release}
+Obsoletes:          fedora-release-workstation <= %{dist_version}
+
+Provides:           system-release-product
+
+Obsoletes:          redhat-release
+Provides:           redhat-release
+Provides:           system-release
+Provides:           system-release(%{version})
+
+Obsoletes:          fedora-release <= %{dist_version}
+Provides:           fedora-release = %{dist_version}-%{dist_release}
+
+Conflicts:          fedora-release
+Conflicts:          system-release-workstation
+Conflicts:          fedora-release-workstation
 
 %description extra
 Extra files of Ojuba release.
+
+%package -n ojuba-repos
+Summary(ar):        ملفات مستودعات أعجوبة
+Summary:            Ojuba repository release files
+Group:              System Environment/Base
+URL:                http://ojuba.org
+Obsoletes:          fedora-repos <= %{dist_version}
+Obsoletes:          fedora-repos-anaconda < 22-0.3
+Obsoletes:          fedora-repos-rawhide <= %{dist_version}-%{dist_release}
+Provides:           fedora-repos = %{dist_version}-%{dist_release}
+Provides:           fedora-repos(%{dist_version})
+
+
+%description -l ar -n ojuba-repos
+إضافة مستودعات أعجوبة لأي نظام موافق.
+
+%description -n ojuba-repos
+Ojuba and fedora package repository files for yum and dnf along with gpg public keys
 
 %prep
 rm -rf %{_topdir}/BUILD/*
 
 %setup -q
-tar xjf fedora-repos-%{dist_version}.tar.bz2 -C ./ --strip-components=1
-tar xjf fedora-release-%{dist_version}.tar.bz2 -C ./ --strip-components=1
+tar xjf fedora-repos-*.tar.bz2 -C ./ --strip-components=1
+tar xjf fedora-release-*.tar.bz2 -C ./ --strip-components=1
 
 sed -i 's|@@VERSION@@|%{dist_version}|g' Fedora-Legal-README.txt
 #cp %{SOURCE2} %{SOURCE3} %{SOURCE4} ./
@@ -139,14 +167,14 @@ ln -s ../usr/lib/issue.net $RPM_BUILD_ROOT/etc/issue.net
 # release packages will link the appropriate one into
 # /usr/lib/os-release
 ln -s ../usr/lib/os-release $RPM_BUILD_ROOT/etc/os-release
-ln -s os.release.d/os-release-ojuba $RPM_BUILD_ROOT/usr/lib/os-release
+ln -s ./os.release.d/os-release-ojuba $RPM_BUILD_ROOT/usr/lib/os-release
 
 # Create the symlink for /etc/issue
 # This will be standard until %post when the
 # release packages will link the appropriate one into
 # /usr/lib/os-release
 ln -s ../usr/lib/issue $RPM_BUILD_ROOT/etc/issue
-ln -s os.release.d/issue-ojuba $RPM_BUILD_ROOT/usr/lib/issue
+ln -s ./os.release.d/issue-ojuba $RPM_BUILD_ROOT/usr/lib/issue
 
 
 # Set up the dist tag macros
@@ -161,17 +189,19 @@ cat >> $RPM_BUILD_ROOT%{_rpmconfigdir}/macros.d/macros.dist << EOF
 %%fc%{dist_version}                   1
 EOF
 
+
 # Add presets
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/user-preset/
 mkdir -p $RPM_BUILD_ROOT%{_prefix}/lib/systemd/system-preset/
+mkdir -p $RPM_BUILD_ROOT/usr/lib/os.release.d/presets
+
 # Default system wide
 install -m 0644 85-display-manager.preset $RPM_BUILD_ROOT%{_prefix}/lib/systemd/system-preset/
 install -m 0644 90-default.preset $RPM_BUILD_ROOT%{_prefix}/lib/systemd/system-preset/
 install -m 0644 99-default-disable.preset $RPM_BUILD_ROOT%{_prefix}/lib/systemd/system-preset/
-# Fedora Server
-#install -m 0644 80-server.preset $RPM_BUILD_ROOT%{_prefix}/lib/systemd/system-preset/
+
 # Fedora Workstation
-install -m 0644 80-workstation.preset $RPM_BUILD_ROOT%{_prefix}/lib/systemd/system-preset/
+install -m 0644 80-workstation.preset $RPM_BUILD_ROOT%{_prefix}/lib/os.release.d/presets/
 
 # Override the list of enabled gnome-shell extensions for Workstation
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/glib-2.0/schemas/
@@ -204,24 +234,6 @@ install -d -m 755 $RPM_BUILD_ROOT/etc/yum.repos.d
 for file in *.repo ; do
   install -m 644 $file $RPM_BUILD_ROOT/etc/yum.repos.d
 done
-
-
-
-%package -n ojuba-repos
-Summary(ar):	ملفات مستودعات أعجوبة
-Summary:	    Ojuba repository release files
-Group:		    System Environment/Base
-URL:		    http://ojuba.org
-Obsoletes:      fedora-repos
-Provides:       fedora-repos = %{dist_version}
-Provides:       fedora-repos(%{dist_version})
-
-%description -l ar -n ojuba-repos
-إضافة مستودعات أعجوبة لأي نظام موافق.
-
-%description -n ojuba-repos
-Ojuba and fedora package repository files for yum and dnf along with gpg public keys
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -291,23 +303,25 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %files extra
 %config %attr(0644,root,root) /usr/lib/os.release.d/os-release-extra
 %{_datadir}/glib-2.0/schemas/org.gnome.shell.gschema.override
-%{_prefix}/lib/systemd/system-preset/80-workstation.preset
+%ghost %{_prefix}/lib/systemd/system-preset/80-workstation.preset
+%config %attr(0644,root,root) /usr/lib/os.release.d/presets/80-workstation.preset
 
 %dir /usr/lib/os.release.d
+%dir /usr/lib/os.release.d/presets
 %config %attr(0644,root,root) /usr/lib/os.release.d/os-release-ojuba
-%config %attr(0644,root,root) /usr/lib/os.release.d/os-release-fedora
-/usr/lib/os-release
-%config %attr(0644,root,root) /usr/lib/os.release.d/issue-ojuba
-%config %attr(0644,root,root) /usr/lib/os.release.d/issue-fedora
-/usr/lib/issue
-%config %attr(0644,root,root) /usr/lib/issue.net
+%config(noreplace) /usr/lib/os.release.d/os-release-fedora
+%ghost /usr/lib/os-release
 /etc/os-release
 %config %attr(0644,root,root) /etc/ojuba-release
-%config %attr(0644,root,root) /etc/fedora-release
+%config(noreplace) /etc/fedora-release
 /etc/redhat-release
 /etc/system-release
 %config %attr(0644,root,root) /etc/system-release-cpe
+%config %attr(0644,root,root) /usr/lib/os.release.d/issue-ojuba
+%config(noreplace) /usr/lib/os.release.d/issue-fedora
+%ghost /usr/lib/issue
 %config(noreplace) /etc/issue
+%config %attr(0644,root,root) /usr/lib/issue.net
 %config(noreplace) /etc/issue.net
 
 %files -n ojuba-repos
@@ -315,12 +329,15 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %doc waqf2-ar.pdf
 %dir /etc/yum.repos.d
 %config(noreplace) /etc/yum.repos.d/ojuba-release.repo
-%config(noreplace) /etc/yum.repos.d/fedora.repo
-%config(noreplace) /etc/yum.repos.d/fedora-updates*.repo
+%config(noreplace) /etc/yum.repos.d/fedora*.repo
+#%config(noreplace) /etc/yum.repos.d/fedora-updates*.repo
 %dir /etc/pki/rpm-gpg
 /etc/pki/rpm-gpg/*
 
 %changelog
+* Tue Nov 15 2016 Ehab El-Gedawy <ehabsas@gmail.com> - 38-0
+- setup for Ojuba 38, fedora 25 base 
+
 * Mon Dec 14 2015 Ehab El-Gedawy <ehabsas@gmail.com> - 37-1
 - setup for Ojuba 37 
 
