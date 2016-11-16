@@ -1,5 +1,5 @@
 [ojuba-release]
-name=Ojuba Thirty Six 36
+name=Ojuba @@DIST_NAME@@
 failovermethod=priority
 baseurl=http://ojuba.org/downloads/releases/$releasever/Everything/$basearch/os/
 #mirrorlist=http://mirrors.ojuba.org/repo=os+arch=$basearch+release=$releasever

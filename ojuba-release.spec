@@ -104,6 +104,7 @@ tar xjf fedora-repos-*.tar.bz2 -C ./ --strip-components=1
 tar xjf fedora-release-*.tar.bz2 -C ./ --strip-components=1
 
 sed -i 's|@@VERSION@@|%{dist_version}|g' Fedora-Legal-README.txt
+sed -i 's|@@DIST_NAME@@|%{release_name} (%{oj_version})|g' ojuba-release.repo
 #cp %{SOURCE2} %{SOURCE3} %{SOURCE4} ./
 
 #cp ojuba.repo repo-ojuba.repo
