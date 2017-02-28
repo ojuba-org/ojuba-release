@@ -11,12 +11,12 @@ Summary(ar):        ملفات نظام أعجوبة
 Summary:            Ojuba release files
 Name:               ojuba-release
 Version:            %{oj_version}
-Release:            %{oj_release}
+Release:            %{oj_release}.1
 License:            WAQFv2 and GPLv2
 Group:              System Environment/Base
 URL:                http://ojuba.org
 Source0:            ojuba-release-%{oj_version}.tar.bz2
-
+Source1:            copr.conf
 Requires:           ojuba-release-extra = %{dist_version}-%{dist_release}
 BuildArch:          noarch
 
@@ -42,7 +42,7 @@ This package provides the rawhide repo definitions.
 %package extra
 Summary:            Extra Ojuba Release
 Version:            %{dist_version}
-Release:            %{oj_release}
+Release:            %{oj_release}.1
 Requires:           ojuba-repos = %{oj_version}-%{oj_release}
 Requires:           ojuba-release = %{oj_version}-%{oj_release}
 # needed for captive portal support
@@ -236,6 +236,11 @@ for file in *.repo ; do
   install -m 644 $file $RPM_BUILD_ROOT/etc/yum.repos.d
 done
 
+#support copr
+install -d -m 755 $RPM_BUILD_ROOT/etc/dnf/plugins
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/etc/dnf/plugins
+
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -324,6 +329,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %config(noreplace) /etc/issue
 %config %attr(0644,root,root) /usr/lib/issue.net
 %config(noreplace) /etc/issue.net
+%config  /etc/dnf/plugins/copr.conf
 
 %files -n ojuba-repos
 %defattr(-,root,root,-)
@@ -336,6 +342,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 /etc/pki/rpm-gpg/*
 
 %changelog
+* Tue Feb 28 2017 youcef sourani <youssef.m.sourani@gmail.com> - 38-0.1
+- Add support copr
+
 * Tue Nov 15 2016 Ehab El-Gedawy <ehabsas@gmail.com> - 38-0
 - setup for Ojuba 38, fedora 25 base 
 
